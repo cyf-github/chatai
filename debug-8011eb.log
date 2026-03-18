@@ -1,0 +1,2 @@
+{"sessionId": "8011eb", "location": "app.py:on_send", "message": "cur_history type and sample", "data": {"type": "<class 'list'>", "len": 0, "sample": "[]"}, "hypothesisId": "H1", "timestamp": 1773648985668}
+{"sessionId": "8011eb", "location": "app.py:on_send", "message": "new_history sample", "data": {"type": "<class 'list'>", "len": 2, "first": "{'role': 'user', 'content': '你是谁？'}"}, "hypothesisId": "H2", "timestamp": 1773648987739}
