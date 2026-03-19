@@ -146,7 +146,7 @@ def build_app():
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    opacity: 0.35;
+    opacity: 0.3;
     pointer-events: none;
 "></canvas>
 <script>
