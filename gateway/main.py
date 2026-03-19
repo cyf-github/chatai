@@ -2,20 +2,11 @@
 
 from __future__ import annotations
 
-import os
-import sys
-
 import grpc
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-_PROTO = os.path.join(_ROOT, "proto")
-if _PROTO not in sys.path:
-    sys.path.insert(0, _PROTO)
-
-import chat_pb2
-import chat_pb2_grpc
+from proto import chat_pb2, chat_pb2_grpc
 
 # service "a"|"b"|"c" -> (host:port, stub_class)
 SERVICE_MAP = {
@@ -54,11 +45,14 @@ def create_app() -> FastAPI:
         channel = grpc.insecure_channel(f"{host}:{port}")
         try:
             stub = stub_cls(channel)
-            resp = stub.Chat(req)
+            resp = stub.Chat(req, timeout=60)
             return {"content": resp.reply}
-        except grpc.RpcError:
-            raise HTTPException(status_code=503, detail="gRPC error")
+        except grpc.RpcError as e:
+            raise HTTPException(status_code=503, detail=str(e))
         finally:
             channel.close()
 
     return app
+
+
+app = create_app()
