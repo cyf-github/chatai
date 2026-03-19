@@ -35,3 +35,19 @@ class QwenServiceServicer(chat_pb2_grpc.QwenServiceServicer):
                 reply="",
                 error_message=str(e),
             )
+
+
+def serve(port: int = 50052) -> None:
+    import grpc
+    from concurrent.futures import ThreadPoolExecutor
+    server = grpc.server(ThreadPoolExecutor(max_workers=10))
+    chat_pb2_grpc.add_QwenServiceServicer_to_server(QwenServiceServicer(), server)
+    server.add_insecure_port(f"[::]:{port}")
+    server.start()
+    server.wait_for_termination()
+
+
+if __name__ == "__main__":
+    import sys
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 50052
+    serve(port)

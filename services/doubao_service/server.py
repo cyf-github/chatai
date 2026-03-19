@@ -33,3 +33,19 @@ class DoubaoServiceServicer(chat_pb2_grpc.DoubaoServiceServicer):
                 reply="",
                 error_message=str(e),
             )
+
+
+def serve(port: int = 50053) -> None:
+    import grpc
+    from concurrent.futures import ThreadPoolExecutor
+    server = grpc.server(ThreadPoolExecutor(max_workers=10))
+    chat_pb2_grpc.add_DoubaoServiceServicer_to_server(DoubaoServiceServicer(), server)
+    server.add_insecure_port(f"[::]:{port}")
+    server.start()
+    server.wait_for_termination()
+
+
+if __name__ == "__main__":
+    import sys
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 50053
+    serve(port)
