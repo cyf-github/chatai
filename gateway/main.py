@@ -46,6 +46,8 @@ def create_app() -> FastAPI:
         try:
             stub = stub_cls(channel)
             resp = stub.Chat(req, timeout=60)
+            if resp.error_message or resp.error_code:
+                return {"content": "", "error": resp.error_message or resp.error_code}
             return {"content": resp.reply}
         except grpc.RpcError as e:
             raise HTTPException(status_code=503, detail=str(e))
