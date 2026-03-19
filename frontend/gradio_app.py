@@ -137,6 +137,19 @@ def build_app():
         raise RuntimeError("gradio is not installed. Run: pip install gradio") from exc
 
     with gr.Blocks(title="Chatai Frontend") as app:
+        # Background meteor animation canvas
+        meteor_html = gr.HTML("""
+<canvas id="meteorCanvas" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    opacity: 0.35;
+    pointer-events: none;
+"></canvas>
+""")
         state = gr.State(init_state())
         with gr.Row():
             with gr.Column(scale=1):
