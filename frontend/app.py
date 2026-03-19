@@ -12,6 +12,7 @@ GATEWAY_URL = os.environ.get("GRADIO_GATEWAY_URL", "http://localhost:8000")
 
 def chat_fn(message, history, service):
     # history: [[user, bot], ...] (tuples format)
+    history = history or []
     messages = []
     for user_msg, bot_msg in history:
         messages.append({"role": "user", "content": user_msg})
