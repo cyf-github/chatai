@@ -149,6 +149,109 @@ def build_app():
     opacity: 0.35;
     pointer-events: none;
 "></canvas>
+<script>
+(function() {
+    const canvas = document.getElementById('meteorCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    class Meteor {
+        constructor() {
+            this.reset();
+        }
+        
+        reset() {
+            // Spawn from top-right area
+            this.x = canvas.width + Math.random() * 100;
+            this.y = Math.random() * (canvas.height * 0.3);
+            this.size = Math.random() * 6 + 2;
+            this.speed = Math.random() * 1.5 + 0.5;
+            // Diagonal movement: left and down
+            this.velocityX = -this.speed;
+            this.velocityY = this.speed * 0.6;
+            this.trailLength = Math.random() * 10 + 10;
+            // Random color: mostly white, occasional light blue
+            const isBlue = Math.random() < 0.2;
+            if (isBlue) {
+                this.r = 180;
+                this.g = 220;
+                this.b = 255;
+            } else {
+                this.r = 255;
+                this.g = 255;
+                this.b = 255;
+            }
+        }
+        
+        update() {
+            this.x += this.velocityX;
+            this.y += this.velocityY;
+            
+            if (this.x < -this.size || this.y > canvas.height + this.size) {
+                this.reset();
+            }
+        }
+        
+        draw() {
+            ctx.beginPath();
+            // Draw trail
+            const trailX = this.x + this.trailLength * Math.abs(this.velocityX);
+            const trailY = this.y - this.trailLength * this.velocityY / this.velocityX;
+            ctx.moveTo(trailX, trailY);
+            ctx.lineTo(this.x, this.y);
+            ctx.lineWidth = this.size;
+            ctx.strokeStyle = `rgba(${this.r}, ${this.g}, ${this.b}, 0.8)`;
+            ctx.stroke();
+            
+            // Draw head
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${this.r}, ${this.g}, ${this.b}, 1)`;
+            ctx.fill();
+        }
+    }
+    
+    const meteors = [];
+    const maxActiveMeteors = 5; // Keep it subtle
+    
+    function spawnMeteor() {
+        if (meteors.length < maxActiveMeteors) {
+            meteors.push(new Meteor());
+        }
+        scheduleNextSpawn();
+    }
+    
+    function scheduleNextSpawn() {
+        // Random delay between 2-4 seconds
+        const delay = 2000 + Math.random() * 2000;
+        setTimeout(spawnMeteor, delay);
+    }
+    
+    function animate() {
+        // Semi-transparent fade for trail effect
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < meteors.length; i++) {
+            meteors[i].update();
+            meteors[i].draw();
+        }
+        
+        requestAnimationFrame(animate);
+    }
+    
+    // Start the first spawn after a short delay
+    scheduleNextSpawn();
+    animate();
+})();
+</script>
 """)
         state = gr.State(init_state())
         with gr.Row():
