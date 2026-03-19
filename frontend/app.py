@@ -34,7 +34,7 @@ def chat_fn(message, history, service):
 
 
 with gr.Blocks() as demo:
-    service = gr.Radio(choices=["a", "b", "c"], value="a", label="选择服务")
+    service = gr.Radio(choices=["a", "b", "c", "d"], value="a", label="选择服务 (a=OpenAI b=Qwen c=豆包 d=Minimax)")
     gr.ChatInterface(fn=chat_fn, additional_inputs=[service], title="多模型聊天")
 
 if __name__ == "__main__":

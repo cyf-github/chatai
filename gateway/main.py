@@ -8,11 +8,12 @@ from pydantic import BaseModel
 
 from proto import chat_pb2, chat_pb2_grpc
 
-# service "a"|"b"|"c" -> (host:port, stub_class)
+# service "a"|"b"|"c"|"d" -> (host:port, stub_class)
 SERVICE_MAP = {
     "a": ("localhost", 50051, chat_pb2_grpc.OpenAIServiceStub),
     "b": ("localhost", 50052, chat_pb2_grpc.QwenServiceStub),
     "c": ("localhost", 50053, chat_pb2_grpc.DoubaoServiceStub),
+    "d": ("localhost", 50054, chat_pb2_grpc.MinMaxServiceStub),
 }
 
 
